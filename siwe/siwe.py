@@ -3,6 +3,7 @@ import string
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
+from humps import decamelize
 
 import eth_utils
 from dateutil.parser import isoparse
@@ -153,6 +154,9 @@ class SiweMessage(BaseModel):
             message_dict = message
         else:
             raise TypeError
+        # decamelize all keys in message_dict to maintain compatility with other SIWE implementations
+        for key in list(message_dict):
+            message_dict[decamelize(key)] = message_dict.pop(key)
         # There is some redundancy in the checks when deserialising a message.
         super().__init__(**message_dict)
 
